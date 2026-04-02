@@ -103,15 +103,6 @@ A core tenet of this curriculum is the **Pivot Loop**. A hunter never stops at a
 5.  **Action:** Ingest the identified "naked" IPs into blocklists and monitor CT logs for new certificates matching the identified patterns.
 
 ---
----
-
-## 📚 Source Material & References
-This curriculum is synthesized from a blend of academic foundations and real-world engineering playbooks:
-
-* **Foundational Frameworks:** *Cyber Threat Hunting* (AlFardan, 2025) & *Applied Network Security Monitoring* (Sanders).
-* **Engineering & Automation:** *Advanced Python for Cybersecurity* (Jones, 2025) & *The Threat Hunter’s Query Playbook* (Hunt.io).
-* **Adversary Logic:** *Practical Malware Analysis* (Sikorski) & *MITRE ATT&CK Framework*.
-* **Digital Intel:** Community telemetry from *Censys*, *Silent Push Research*, and the *JARM/JA4* fingerprinting standards.
 
 ---
 

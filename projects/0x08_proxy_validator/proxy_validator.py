@@ -1,27 +1,3 @@
-# Module 0x08: Proxy & Botnet Layers
-
-## Overview
-
-When malware executes, it rarely uses the target's direct internet connection—and threat actors rarely connect directly to their C2. Botnets act as massive proxy exits. Identifying residential proxy exit nodes and multi-tier backconnect architecture is paramount to hunting the true actor origin.
-
-## Key Concepts
-* **Residential Proxies versus Datacenter Proxies**: Differentiating traffic routing via ASNs and IP reputation.
-* **Socks5 Backconnects**: The infrastructure logic used by proxies like 911.re, VIP72, or modern variants.
-* **Multi-tier Infrastructure**: Tracing traffic from the Target -> Residential IP -> Cloud VPS -> Actor C2.
-
----
-## 🛠️ Module Project: ASN & Proxy Validation Checker
-*Reference: Art of Cyber Warfare*
-
-Given a massive PCAP or list of internal connections, how do you quickly determine if an outgoing connection is going to a legitimate ISP (residential) or a known bulletproof proxy hosting provider?
-
-### The Objective
-1. Load a list of IPs.
-2. Query the IP against an ASN mapping database (like `ip-api.com` or local MaxMind GeoLite2).
-3. Flag connections that terminate in Datacenters (e.g., AWS, DigitalOcean, Hetzner, or obscure foreign ASNs) vs Residential ISPs (Comcast, AT&T).
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x08 Capstone Project: Exit Node Proxy Validator
 # Fully Working Reference Solution
@@ -81,14 +57,12 @@ def analyze_exit_nodes(ip_list: list):
             
         time.sleep(1.2) # Throttle to respect public API limits
         
-    print(f"
-[*] Analyzed {len(results)} IP addresses.")
+    print(f"\n[*] Analyzed {len(results)} IP addresses.")
     print("-" * 60)
     for r in results:
         print(f"[{r['ip']}] {r['classification']}")
         print(f"    ISP: {r['isp']} | ASN: {r['asn']}")
-        print(f"    Confidence: {r['note']}
-")
+        print(f"    Confidence: {r['note']}\n")
 
 if __name__ == "__main__":
     print("[*] Starting Residential Proxy Validator...")
@@ -101,7 +75,3 @@ if __name__ == "__main__":
     ]
     
     analyze_exit_nodes(mock_traffic_log)
-
-```
-
-**Takeaway:** A triage script that rapidly classifies outbound traffic to single out anomalous Datacenter proxy routing from standard Residential traffic.

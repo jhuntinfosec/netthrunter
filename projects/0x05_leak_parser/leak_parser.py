@@ -1,27 +1,3 @@
-# Module 0x05: Leak & Stealer Intel
-
-## Overview
-
-Infostealers (Redline, Vidar, Lumma, Raccoon) represent massive initial access brokers. By analyzing stealer leaks and interacting with Telegram or dark web telemetry, we can automate C2 discovery directly from the source.
-
-## Key Concepts
-* **Stealer Core Mechanics**: How stealers serialize configurations and connect back to drop servers.
-* **Telegram Telemetry**: Interacting with bot API keys left inside malware binaries or logs.
-* **Config Extraction**: Parsing obfuscated or structured C2 strings from binaries and `.txt` dump files.
-
----
-## 🛠️ Module Project: Stealer Run-log Parsing
-*Reference: Data Engineering for Cybersecurity*
-
-We will create a pipeline to process massive amounts of raw textual data (like stolen browser DBs and `Important.txt` bot logs) and extract C2 indicators or hardcoded API keys.
-
-### The Objective
-1. Load a `.zip` or a giant text file representing a parsed infostealer dump.
-2. Use regular expressions to extract IP addresses, Discord Webhook URLs, and Telegram Bot API tokens.
-3. Format the identified artifacts securely to avoid accidental execution.
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x05 Capstone Project: Automated Stealer Leak Parser
 # Fully Working Reference Solution
@@ -69,7 +45,7 @@ def parse_leak_file(filepath: str):
         # Telegram Bot API Token Format: <Number>: <Alphanumeric_string>
         telegram_regex = re.compile(r"([0-9]{8,11}:[a-zA-Z0-9_-]{35})")
         # Standard IPv4 Format
-        ip_regex = re.compile(r"(?:[0-9]{1,3}\.){3}[0-9]{1,3}")
+        ip_regex = re.compile(r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b")
         # Discord Webhook
         discord_regex = re.compile(r"(https?://discord\.com/api/webhooks/[0-9]+/[a-zA-Z0-9_-]+)")
         
@@ -90,12 +66,10 @@ def parse_leak_file(filepath: str):
         results["external_ips"] = filtered_ips
         del results["raw_ips"]
         
-        print("
---- Extracted Telemetry ---")
+        print("\n--- Extracted Telemetry ---")
         print(json.dumps(results, indent=3))
         
-        print("
-[!] Take these Telegram Bot Tokens to the Telegram API: `https://api.telegram.org/bot<TOKEN>/getMe` to identify the threat actor!")
+        print("\n[!] Take these Telegram Bot Tokens to the Telegram API: `https://api.telegram.org/bot<TOKEN>/getMe` to identify the threat actor!")
         
     except FileNotFoundError:
         print(f"[x] File {filepath} not found.")
@@ -105,7 +79,3 @@ if __name__ == "__main__":
     create_mock_stealer_log(target_file)
     
     parse_leak_file(target_file)
-
-```
-
-**Takeaway:** A standalone Python extractor to triage thousands of stealer records and immediately pivot to the adversary's management console!

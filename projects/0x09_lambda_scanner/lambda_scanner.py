@@ -1,27 +1,3 @@
-# Module 0x09: Hunter OPSEC
-
-## Overview
-
-Anti-scanning detection is a reality. Sophisticated actors monitor their own access logs for JARM/JA3 probes. If they see a specific scanner IP or fingerprint repeatedly, they will rotate their infra, block your range, or feed you false telemetry.
-
-## Key Concepts
-* **Identifying Researcher Traps**: Decoy C2 servers (honeypots) that actors monitor.
-* **Distributed Hunting**: Using Serverless (AWS Lambda, Google Cloud Functions) to distribute your outbound requests and avoid IP bans.
-* **Scanner Obfuscation**: Camouflaging your scanning tool's Python Requests/httpx HTTP headers and TLS signatures.
-
----
-## 🛠️ Module Project: Distributed Scanner Deployment
-*Reference: From Day Zero to Zero Day*
-
-Instead of running a scanner script from your local machine, deploy it statelessly so it receives a new IP address every run from a pool of cloud provider endpoints.
-
-### The Objective
-1. Write a minimal Python script that fetches the `Server` header from an IP and calculates its JA3 fingerprint (using `jarm` or `ja3`).
-2. Wrap this script inside an AWS Lambda, Azure Function, or Google Cloud Run container.
-3. Trigger the function 10 times to demonstrate that the originating IP is entirely different on each run.
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x09 Capstone Project: Distributed AWS Lambda Scanner
 # Fully Working Reference Solution
@@ -111,13 +87,7 @@ if __name__ == "__main__":
     
     result = lambda_handler(mock_event, mock_context)
     
-    print("
---- Lambda Scan Results ---")
+    print("\n--- Lambda Scan Results ---")
     print(json.dumps(result, indent=2))
     
-    print("
-[+] To distribute this scan, zip this file and upload it to an AWS Lambda function!")
-
-```
-
-**Takeaway:** A completely obfuscated scanning profile that blends your threat intelligence gathering in with generic cloud traffic, rendering adversary IP blocking useless.
+    print("\n[+] To distribute this scan, zip this file and upload it to an AWS Lambda function!")

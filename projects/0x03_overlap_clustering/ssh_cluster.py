@@ -1,27 +1,3 @@
-# Module 0x03: Overlap & Clustering
-
-## Overview
-
-We move from flat lists to relationship graphs. If three IPs share an SSH key fingerprint and are hosted on the same "bulletproof" ASN, they are treated as a single cluster. This module covers identifying structural overlaps across seemingly disparate assets.
-
-## Key Concepts
-* **ASN Affinity**: Many threat actors prefer specific hosting providers that ignore DMCA/Abuse complaints.
-* **Shared SSH Keys**: Adversaries often use automate infrastructure pipelines (Ansible/Terraform) spreading identical SSH Host Keys across multiple C2s.
-* **Registrar Trends**: Correlating WHOIS patterns and the usage of specific Privacy Protect providers.
-
----
-## 🛠️ Module Project: Tracking SSH Key Overlaps
-*Reference: The Threat Hunter's Query Playbook*
-
-We are going to hunt for adversaries creating identical infrastructure across different networks.
-
-### The Objective
-1. Query Shodan or Censys for an SSH Host Key (RSA or Ed25519 hash).
-2. Retrieve the results.
-3. Group the identified IP addresses by their Autonomous System Number (ASN) or ISP.
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x03 Capstone Project: Overlap & Clustering Engine
 # Fully Working Reference Solution
@@ -79,10 +55,8 @@ def analyze_clusters(nodes: list):
         asn_counter[asn] += 1
         isp_mapping[asn] = isp  # Store the readable name
         
-    print(f"
-[*] Total Overlapping Nodes Found: {total_nodes}")
-    print("
---- Autonomous System (ASN) Infrastructure Clustering ---")
+    print(f"\n[*] Total Overlapping Nodes Found: {total_nodes}")
+    print("\n--- Autonomous System (ASN) Infrastructure Clustering ---")
     
     # Sort and display the clusters
     for asn, count in asn_counter.most_common():
@@ -103,7 +77,3 @@ if __name__ == "__main__":
     
     nodes = search_ssh_hash(target_ssh_hash)
     analyze_clusters(nodes)
-
-```
-
-**Takeaway:** A clustering logic script that transforms a single indicator into an actor's entire infrastructure map across multiple hosting providers!

@@ -1,33 +1,3 @@
-# Module 0x0A: Data Science for Hunting
-
-## Overview
-
-When the volume of data becomes too large for simple manual tracking or linear logic rules, we turn to math. Identifying malicious domains often relies on detecting high randomness in string generation.
-
-## Key Concepts
-* **Shannon Entropy**: Measuring the amount of mathematical randomness within hostnames or URIs.
-* **K-Means Clustering**: Grouping adversary infrastructure mathematically by vectorizing their properties.
-* **Anomaly Detection**: Flagging outliers in massive passive DNS logs.
-
-### The Shannon Entropy Formula
-$$H = -\sum_{i=1}^{n} P(x_i) \log_b P(x_i)$$
-
-High entropy ($H$) in a sub-domain or a TLS certificate "Common Name" is a primary trigger for further investigation into automated infrastructure generation (DGAs).
-
----
-## 🛠️ Module Project: Shannon Entropy Domain Classifier
-*Reference: Data Engineering for Cybersecurity*
-
-We will process thousands of domains and calculate their randomness to filter out standard, readable English sites (like `google.com`) and instantly identify DGA behavior (`x18jdfx1zz.su`).
-
-### The Objective
-1. Write a Python function calculating the Shannon Entropy of a string.
-2. Read a massive CSV file using `pandas`.
-3. Apply the function to the `Domain` column.
-4. Output any domains whose Entropy score is higher than 3.5 (indicating non-standard language/randomness).
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x0A Capstone Project: Shannon Entropy Classifier
 # Fully Working Reference Solution
@@ -96,15 +66,13 @@ def analyze_domains(file_path: str, threshold: float = 3.5):
     # 3. Sort for human readability
     df = df.sort_values(by="entropy_score", ascending=False)
     
-    print("
-[*} Full Dataset Entropy Analysis:")
+    print("\n[*} Full Dataset Entropy Analysis:")
     print(df[['domain', 'entropy_score']].to_string(index=False))
     
     # 4. Filter the dataframe to only show DGA candidates
     dga_candidates = df[df['entropy_score'] >= threshold]
     
-    print(f"
-[!] ALERT: Extracted {len(dga_candidates)} HIGH ENTROPY domains (Threshold: {threshold}):")
+    print(f"\n[!] ALERT: Extracted {len(dga_candidates)} HIGH ENTROPY domains (Threshold: {threshold}):")
     if not dga_candidates.empty:
         print(dga_candidates[['domain', 'entropy_score']].to_string(index=False))
 
@@ -125,7 +93,3 @@ if __name__ == "__main__":
     # Clean up the test file
     if os.path.exists(test_csv):
         os.remove(test_csv)
-
-```
-
-**Takeaway:** A fully automated mechanism for classifying and alerting on machine-generated, randomly customized threat actor infrastructure!

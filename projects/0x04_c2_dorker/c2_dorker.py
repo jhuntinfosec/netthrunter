@@ -1,28 +1,3 @@
-# Module 0x04: C2 & Open Directories
-
-## Overview
-
-Identifying the exact Command and Control (C2) software allows us to understand the adversary's capabilities. This module discusses framework-specific fingerprints and how to hunt for misconfigured, public open directories exposing malicious payloads.
-
-## Key Concepts
-* **Advanced Dorking**: Searching exposed file systems via Google, Shodan, or custom web scanners.
-* **Framework Fingerprints**: Cobalt Strike (checksums, stagers, Malleable profiles), Sliver, Havoc, Mythic.
-* **Stager Profiling**: Differentiating between default stagers and bespoke web servers.
-
----
-## 🛠️ Module Project: Custom Web Scanner for Stagers
-*Reference: Black Hat Go & Black Hat Python*
-
-Your goal is to parse arbitrary web servers for signs of default Cobalt Strike URI stagers or exposed directories containing `.bin` payloads.
-
-### The Objective
-1. Read a list of potential malicious endpoints.
-2. Send HTTP requests and analyze the `Server` or `X-Powered-By` headers.
-3. Attempt to fetch a common default Cobalt Strike URL path (e.g. `1234.bin` or calculate a URI checksum).
-4. Alert if an open directory is encountered (regex for "Index of /").
-
-### Boilerplate Setup (Python implementation)
-```python
 #!/usr/bin/env python3
 # Module 0x04 Capstone Project: C2 Open Directory Scanner
 # Fully Working Reference Solution
@@ -100,8 +75,7 @@ async def main(target_list: list, concurrency: int = 10):
         for task in tasks:
             task.cancel()
 
-    print("
---- Summary Report ---")
+    print("\n--- Summary Report ---")
     if not results:
         print("No open directories found.")
     else:
@@ -122,7 +96,3 @@ if __name__ == "__main__":
     
     print("[*] Starting Asynchronous C2 Dorker...")
     asyncio.run(main(mock_targets, concurrency=5))
-
-```
-
-**Takeaway:** An automated recon tool capable of indexing and downloading stagers left open by lazy adversaries!

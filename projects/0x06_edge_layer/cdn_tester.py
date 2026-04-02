@@ -1,27 +1,3 @@
-# Module 0x06: Edge Layer Obfuscation
-
-## Overview
-
-Modern adversaries hide behind Cloudflare, Fastly, or custom CDNs to obfuscate their true location and utilize verified TLS certificates. By analyzing Domain Fronting, Cloudflare Tunnels (Argo), and Web Application Firewall (WAF) evasions, we can bypass the edge and identify the backend.
-
-## Key Concepts
-* **Domain Fronting & Borrowing**: Exploiting CDN logic using `Host` vs `SNI` header mismatches.
-* **Cloudflare Tunnels (Argo)**: Creating zero-trust inbound tunnels without internet-exposed ports or public DNS.
-* **WAF Evasion Fingerprinting**: Identifying unique response headers when directly querying origin IPs behind a WAF.
-
----
-## 🛠️ Module Project: HTTP Header Mismatch Tester
-*Reference: Adversarial Tradecraft in Cybersecurity & Hacking APIs*
-
-Your job is to write a tester that deliberately connects to a CDN Edge IP but requests a different inner `Host` header to simulate a domain front, or tests for origin IP exposure.
-
-### The Objective
-1. Initiate a TLS connection specifically pointing the SNI to an allowed high-reputation domain (e.g., `cdn.discordapp.com`).
-2. Overwrite the HTTP `Host` header with the target malicious C2 domain.
-3. Compare the response (e.g., 403 Forbidden vs 200 OK or a staged payload).
-
-### Boilerplate Setup
-```python
 #!/usr/bin/env python3
 # Module 0x06 Capstone Project: Edge-Layer Mismatch Tester
 # Fully Working Reference Solution
@@ -53,17 +29,11 @@ def test_domain_front(edge_ip: str, allowed_sni: str, malicious_host: str, port:
         
         # Forge the HTTP request inside the TLS tunnel
         request = (
-            f"GET / HTTP/1.1
-"
-            f"Host: {malicious_host}
-"
-            f"User-Agent: AIH-C-Scanner/1.0
-"
-            f"Accept: */*
-"
-            f"Connection: close
-
-"
+            f"GET / HTTP/1.1\r\n"
+            f"Host: {malicious_host}\r\n"
+            f"User-Agent: AIH-C-Scanner/1.0\r\n"
+            f"Accept: */*\r\n"
+            f"Connection: close\r\n\r\n"
         )
         
         secure_sock.sendall(request.encode())
@@ -82,8 +52,7 @@ def test_domain_front(edge_ip: str, allowed_sni: str, malicious_host: str, port:
         
         # Parse output
         status_line = decoded.splitlines()[0] if decoded else "No response"
-        print(f"
-[+] STATUS CODE   : {status_line}")
+        print(f"\n[+] STATUS CODE   : {status_line}")
         
         if "403" in status_line or "Forbidden" in status_line:
             print("[✓] C2 or WAF actively blocking the mismatch.")
@@ -91,8 +60,7 @@ def test_domain_front(edge_ip: str, allowed_sni: str, malicious_host: str, port:
             print("[!] DOMAIN FRONT SUCCESSFUL! C2 payload served.")
         else:
             print("[-] Inconclusive matching response. See headers:")
-            print("
-".join(decoded.splitlines()[:10]))  # First 10 lines
+            print("\n".join(decoded.splitlines()[:10]))  # First 10 lines
             
     except Exception as e:
         print(f"[x] Connection failed: {e}")
@@ -107,7 +75,3 @@ if __name__ == "__main__":
     MALICIOUS_C2_HOST = "a.malicious.example.com"
     
     test_domain_front(CF_EDGE, HARMLESS_SNI, MALICIOUS_C2_HOST)
-
-```
-
-**Takeaway:** A script to rapidly test edge-layer misconfigurations and detect adversaries hiding behind legitimate CDN trust planes.
