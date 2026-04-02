@@ -51,9 +51,14 @@ site/                  — MkDocs build output (gitignored)
 
 ## Active Initiatives
 
-### Initiative: Curriculum Deep Enhancement (0x01-0x0A)
-**Status:** active
+*No active initiatives.*
+
+---
+
+### Completed: Curriculum Deep Enhancement (0x01-0x0A)
+**Status:** completed
 **Started:** 2026-04-02
+**Completed:** 2026-04-02
 **Goal:** Transform all 10 modules from intermediate overviews into practitioner-grade adversary hunting references with production-quality capstone projects.
 
 > The current curriculum has solid structure but intermediate depth. Module docs are ~2.5 pages each with surface-level concept coverage. Capstone projects are 70-99 LOC starters that demonstrate one technique per module. The enhancement brings each module to advanced practitioner level: deeper technique coverage, specific tool integration, and projects that implement the full technique set described in the teaching material.
@@ -419,6 +424,7 @@ Main is sacred. Each wave dispatches a single worktree:
 
 | Initiative | Period | Phases | Key Decisions | Archived |
 |-----------|--------|--------|---------------|----------|
+| Curriculum Deep Enhancement (0x01-0x0A) | 2026-04-02 | 10 waves (W1-W10) | DEC-STRUCT-001..005 | Inline above |
 
 ---
 

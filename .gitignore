@@ -7,5 +7,16 @@ __pycache__/
 books/
 *.pdf
 
+# Claude Code local config and worktrees
+.claude/
+
+# Generated artifacts from capstone projects
+*.png
+*.joblib
+*.gexf
+*.cypher
+template.yaml
+dns_logs.csv
+
 # macOS
 .DS_Store
