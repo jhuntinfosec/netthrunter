@@ -1,0 +1,54 @@
+site_name: Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C)
+site_description: An engineering-centric methodology for proactively identifying, tracking, and mapping threat actor infrastructure.
+site_author: Slacker
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: default
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.arithmatex:
+      generic: true
+
+nav:
+  - Home: index.md
+  - Modules:
+    - "0x01: Structural Fingerprinting": modules/0x01_structural_fingerprinting.md
+    - "0x02: Infrastructure Mapping": modules/0x02_infrastructure_mapping.md
+    - "0x03: Overlap & Clustering": modules/0x03_overlap_clustering.md
+    - "0x04: C2 & Open Directories": modules/0x04_c2_open_directories.md
+    - "0x05: Leak & Stealer Intel": modules/0x05_leak_stealer_intel.md
+    - "0x06: Edge Layer Obfuscation": modules/0x06_edge_layer_obfuscation.md
+    - "0x07: Graph-Based Hunting": modules/0x07_graph_based_hunting.md
+    - "0x08: Proxy & Botnet Layers": modules/0x08_proxy_botnet_layers.md
+    - "0x09: Hunter OPSEC": modules/0x09_hunter_opsec.md
+    - "0x0A: Data Science for Hunting": modules/0x0A_data_science_hunting.md
+  - Projects: projects.md

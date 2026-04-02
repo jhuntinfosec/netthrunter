@@ -1,0 +1,11 @@
+.venv/
+site/
+__pycache__/
+*.pyc
+
+# Do not upload proprietary books or references
+books/
+*.pdf
+
+# macOS
+.DS_Store
