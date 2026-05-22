@@ -14,11 +14,19 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install core dependencies
-pip install pandas networkx matplotlib scikit-learn httpx
+pip install pandas networkx matplotlib scikit-learn httpx jupyterlab
+
+# Start the background infrastructure (Neo4j for graphs, JupyterLab)
+docker-compose up -d
 
 # Run any capstone project (all work in demo/mock mode)
 python projects/0x01_jarm_scanner/tls_fingerprint.py
-python projects/0x0A_entropy_classifier/entropy.py --cluster --anomaly --graph
+
+# Modules can now be chained together via the unified IOC schema
+python projects/0x01_jarm_scanner/tls_fingerprint.py | python projects/0x0F_ttp_profiler/ttp_profiler.py
+
+# Interact with the data science modules via Jupyter Notebooks
+jupyter lab
 
 # Serve the curriculum docs locally
 pip install mkdocs-material
