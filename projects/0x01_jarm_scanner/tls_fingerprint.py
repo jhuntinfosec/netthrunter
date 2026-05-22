@@ -532,8 +532,30 @@ def load_targets(args) -> list[tuple[str, int]]:
 # ---------------------------------------------------------------------------
 
 def format_json(results: list[dict]) -> str:
-    """Serialize results to indented JSON."""
-    return json.dumps(results, indent=2, default=str)
+    """Serialize results to indented JSON using the AIH-C IOC Schema."""
+    indicators = []
+    for r in results:
+        target_ip = r.get("target", "").split(":")[0]
+        indicators.append({
+            "type": "ip",
+            "value": target_ip,
+            "context": r
+        })
+        if r.get("jarm_hash"):
+            indicators.append({
+                "type": "jarm",
+                "value": r.get("jarm_hash"),
+                "context": {"target": target_ip, "c2_match": r.get("c2_match")}
+            })
+
+    output = {
+        "metadata": {
+            "source_module": "0x01_tls_fingerprint",
+            "generated_at": datetime.now(timezone.utc).isoformat()
+        },
+        "indicators": indicators
+    }
+    return json.dumps(output, indent=2, default=str)
 
 
 def format_csv(results: list[dict]) -> str:

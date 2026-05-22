@@ -2,7 +2,7 @@
 
 **Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C)**
 
-A 10-module technical curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Built for senior threat researchers and security engineers who want to move beyond static IOCs and focus on behavioral fingerprints and structural overlaps of adversary infrastructure.
+A 15-module technical curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Built for senior threat researchers and security engineers who want to move beyond static IOCs and focus on behavioral fingerprints and structural overlaps of adversary infrastructure.
 
 ## Quickstart
 
@@ -41,6 +41,11 @@ Each module pairs a teaching document (theory, techniques, tool references, case
 | **0x08** | [Proxy & Botnet Layers](docs/modules/0x08_proxy_botnet_layers.md) | IP intelligence classifier with risk scoring | 888 |
 | **0x09** | [Hunter OPSEC](docs/modules/0x09_hunter_opsec.md) | Distributed Lambda scanner with SAM templates | 610 |
 | **0x0A** | [Data Science for Hunting](docs/modules/0x0A_data_science_hunting.md) | Entropy + K-Means + Isolation Forest classifier | 618 |
+| **0x0B** | [Cloud Infrastructure Hunting](docs/modules/0x0B_cloud_infrastructure.md) | Map cloud IPs and identify open S3 buckets | 65 |
+| **0x0C** | [Follow the Money (Crypto Tracking)](docs/modules/0x0C_crypto_tracking.md) | Traces transactions and clusters BTC wallets | 46 |
+| **0x0D** | [LLM & AI-Assisted Threat Hunting](docs/modules/0x0D_llm_hunting.md) | Extract IOCs using local Ollama/Claude/Gemini | 62 |
+| **0x0E** | [Active Defense & Deception](docs/modules/0x0E_active_defense.md) | Active honeypot listener logging scanners | 45 |
+| **0x0F** | [Threat Profiling & TTP Matrix Mapping](docs/modules/0x0F_threat_profiling.md) | Maps IOCs to MITRE ATT&CK behavior profiles | 45 |
 
 All projects run in **mock/demo mode** with zero configuration — no API keys required. Real API integrations (Shodan, crt.sh, ip-api.com, Telegram) activate via environment variables.
 
@@ -48,7 +53,7 @@ All projects run in **mock/demo mode** with zero configuration — no API keys r
 
 ```
 docs/
-  modules/          10 teaching modules (Markdown, served via MkDocs)
+  modules/          15 teaching modules (Markdown, served via MkDocs)
   index.md          Landing page
   projects.md       Capstone projects overview
 projects/
@@ -62,6 +67,11 @@ projects/
   0x08_proxy_validator/     proxy_validator.py
   0x09_lambda_scanner/      lambda_scanner.py
   0x0A_entropy_classifier/  entropy.py
+  0x0B_cloud_mapper/        cloud_mapper.py
+  0x0C_crypto_tracer/       crypto_tracer.py
+  0x0D_intel_extractor/     intel_extractor.py
+  0x0E_decoy_listener/      decoy_listener.py
+  0x0F_ttp_profiler/        ttp_profiler.py
 books/              Offline reference library (PDFs, gitignored)
 mkdocs.yml          MkDocs Material configuration
 ```

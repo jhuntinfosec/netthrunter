@@ -1,0 +1,7 @@
+timestamp,client_ip,query,qtype,rcode
+2026-05-22T10:00:01Z,192.168.1.5,microsoft.com,A,NOERROR
+2026-05-22T10:00:05Z,192.168.1.5,microsoft-update-defender.com,A,NOERROR
+2026-05-22T10:00:10Z,192.168.1.5,akjsdhfkjashdf.com,A,NXDOMAIN
+2026-05-22T10:00:15Z,192.168.1.12,google.com,A,NOERROR
+2026-05-22T10:00:20Z,192.168.1.5,xczvbnmqwerty.net,A,NXDOMAIN
+2026-05-22T10:00:25Z,192.168.1.5,secure-bank-login-portal.com,A,NOERROR

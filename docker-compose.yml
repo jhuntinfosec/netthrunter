@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5.12.0
+    ports:
+      - "7474:7474" # HTTP Browser
+      - "7687:7687" # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/huntgraph123 # Default password for the lab
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+    networks:
+      - huntnet
+
+  jupyterlab:
+    image: jupyter/scipy-notebook:python-3.11
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_TOKEN=huntlab123
+    volumes:
+      - .:/home/jovyan/work # Mount the entire project into Jupyter
+    restart: unless-stopped
+    networks:
+      - huntnet
+
+volumes:
+  neo4j_data:
+
+networks:
+  huntnet:
+    driver: bridge

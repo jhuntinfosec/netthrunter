@@ -51,4 +51,9 @@ nav:
     - "0x08: Proxy & Botnet Layers": modules/0x08_proxy_botnet_layers.md
     - "0x09: Hunter OPSEC": modules/0x09_hunter_opsec.md
     - "0x0A: Data Science for Hunting": modules/0x0A_data_science_hunting.md
+    - "0x0B: Cloud Infrastructure Hunting": modules/0x0B_cloud_infrastructure.md
+    - "0x0C: Follow the Money (Crypto Tracking)": modules/0x0C_crypto_tracking.md
+    - "0x0D: LLM & AI-Assisted Threat Hunting": modules/0x0D_llm_hunting.md
+    - "0x0E: Active Defense & Deception": modules/0x0E_active_defense.md
+    - "0x0F: Threat Profiling & TTP Matrix Mapping": modules/0x0F_threat_profiling.md
   - Projects: projects.md
