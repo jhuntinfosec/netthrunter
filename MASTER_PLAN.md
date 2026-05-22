@@ -8,7 +8,7 @@
 **Created:** 2026-04-02
 **Last updated:** 2026-04-02
 
-Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C) — a 10-module educational curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Targets senior threat researchers and security engineers. Each module pairs a teaching document with a runnable Python capstone project. Served via MkDocs with Material theme.
+Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C) — a 15-module educational curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Targets senior threat researchers and security engineers. Each module pairs a teaching document with a runnable Python capstone project. Served via MkDocs with Material theme.
 
 ## Architecture
 
@@ -425,6 +425,7 @@ Main is sacred. Each wave dispatches a single worktree:
 | Initiative | Period | Phases | Key Decisions | Archived |
 |-----------|--------|--------|---------------|----------|
 | Curriculum Deep Enhancement (0x01-0x0A) | 2026-04-02 | 10 waves (W1-W10) | DEC-STRUCT-001..005 | Inline above |
+| Curriculum Expansion (0x0B-0x0F) | 2026-05-22 | 5 modules + Infra | Docker, Unified JSON Schema | Inline |
 
 ---
 

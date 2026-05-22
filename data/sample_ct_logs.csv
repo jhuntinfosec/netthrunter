@@ -1,0 +1,6 @@
+domain,issuer,cert_date,cert_expiry,ip_addresses,registrar,creation_date,registrant_org
+microsoft-update-defender.com,"Let's Encrypt",2024-03-15,2024-06-13,185.220.101.77,Namecheap,2024-03-14,WhoisGuard Protected
+microsoft-update-security.net,"Let's Encrypt",2024-03-15,2024-06-13,185.220.101.77,Namecheap,2024-03-14,WhoisGuard Protected
+update-microsoft-patch.io,ZeroSSL,2024-03-16,2024-06-14,45.142.212.100,Porkbun,2024-03-15,Withheld for Privacy
+secure-bank-login-portal.com,"Let's Encrypt",2024-03-14,2024-06-12,185.220.101.77,Namecheap,2024-03-14,WhoisGuard Protected
+secure-bank-login-verify.net,"Let's Encrypt",2024-03-14,2024-06-12,185.220.101.78,Namecheap,2024-03-13,WhoisGuard Protected

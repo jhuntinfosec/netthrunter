@@ -9,7 +9,7 @@ To provide an engineering-centric methodology for proactively identifying, track
 
 ---
 
-## 🏛️ The Curriculum (10 Modules)
+## 🏛️ The Curriculum (15 Modules)
 
 | Module | Focus Area | Key Concepts |
 | :--- | :--- | :--- |
@@ -23,6 +23,11 @@ To provide an engineering-centric methodology for proactively identifying, track
 | **0x08** | **[Proxy & Botnet Layers](modules/0x08_proxy_botnet_layers.md)** | Residential proxy exit nodes, Socks5 hunting, and multi-tier backconnect infrastructure. |
 | **0x09** | **[Hunter OPSEC](modules/0x09_hunter_opsec.md)** | Anti-scanning detection, distributed hunting (Lambda/Serverless), and identifying researcher traps. |
 | **0x0A** | **[Data Science for Hunting](modules/0x0A_data_science_hunting.md)** | Shannon Entropy analysis, K-Means clustering of fingerprints, and anomaly detection. |
+| **0x0B** | **[Cloud Infrastructure Hunting](modules/0x0B_cloud_infrastructure.md)** | Mapping cloud IP footprints, S3/Blob enumeration, and identifying serverless abuse. |
+| **0x0C** | **[Follow the Money (Crypto Tracking)](modules/0x0C_crypto_tracking.md)** | Bitcoin blockchain heuristics, tracing mixing services, and ransomware tracking. |
+| **0x0D** | **[LLM & AI-Assisted Threat Hunting](modules/0x0D_llm_hunting.md)** | Extracting unstructured intel, generating STIX/TAXII, and using local Ollama instances. |
+| **0x0E** | **[Active Defense & Deception](modules/0x0E_active_defense.md)** | Deploying high-interaction honeypots, logging scanner IPs, and JA3 fingerprint collection. |
+| **0x0F** | **[Threat Profiling & TTP Matrix Mapping](modules/0x0F_threat_profiling.md)** | Creating behavioral profiles, MITRE PRE-ATT&CK mapping, and compiling actor dossiers. |
 
 ---
 

@@ -451,15 +451,27 @@ def format_text(results: List[Dict], clusters: Dict[str, List[str]]) -> str:
 
 
 def format_json(results: List[Dict], clusters: Dict[str, List[str]]) -> str:
-    """Render results as JSON for machine consumption."""
+    """Render results as JSON using the AIH-C IOC Schema."""
+    indicators = []
+    for r in results:
+        indicators.append({
+            "type": "domain",
+            "value": r.get("name_value", ""),
+            "context": r
+        })
+    for ip, domains in clusters.items():
+        indicators.append({
+            "type": "ip",
+            "value": ip,
+            "context": {"domains": domains, "cluster_size": len(domains)}
+        })
+
     output = {
-        "generated_at": datetime.now().isoformat() + "Z",
-        "total_results": len(results),
-        "domains": results,
-        "infrastructure_clusters": [
-            {"ip": ip, "domains": domains, "count": len(domains)}
-            for ip, domains in sorted(clusters.items(), key=lambda x: len(x[1]), reverse=True)
-        ],
+        "metadata": {
+            "source_module": "0x02_ct_hunter",
+            "generated_at": datetime.now().isoformat() + "Z"
+        },
+        "indicators": indicators
     }
     return json.dumps(output, indent=2, default=str)
 
@@ -601,11 +613,18 @@ def main() -> None:
     elif args.keywords:
         try:
             with open(args.keywords) as fh:
-                keywords = [
-                    line.strip()
-                    for line in fh
-                    if line.strip() and not line.startswith("#")
-                ]
+                try:
+                    data = json.load(fh)
+                    if "indicators" in data:
+                        keywords = [ind["value"] for ind in data["indicators"] if ind["type"] in ("domain", "ip")]
+                        log.info(f"Loaded {len(keywords)} keywords from IOC Schema")
+                except json.JSONDecodeError:
+                    fh.seek(0)
+                    keywords = [
+                        line.strip()
+                        for line in fh
+                        if line.strip() and not line.startswith("#")
+                    ]
             if not keywords:
                 print(f"[!] No keywords found in {args.keywords}", file=sys.stderr)
                 sys.exit(1)
