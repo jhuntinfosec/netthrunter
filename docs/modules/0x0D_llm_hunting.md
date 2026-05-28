@@ -1,118 +1,78 @@
 # Module 0x0D: LLM & AI-Assisted Threat Hunting
 
-Threat hunters often deal with massive amounts of unstructured data (e.g., threat intel reports, raw pastes, stealer logs). This module covers using Large Language Models (LLMs) to automate the extraction of Indicators of Compromise (IOCs) and structure them into STIX/TAXII formats or the AIH-C IOC Schema.
+## Overview
+
+Threat researchers often need to process messy text: vendor reports, raw pastes, stealer logs, sandbox output, abuse reports, chat exports, and analyst notes. LLMs can accelerate extraction and triage, but they also introduce hallucination, privacy, and provenance risks.
+
+This module teaches a local-first, schema-first workflow for using LLMs as assistants in defensive hunting pipelines. The model suggests structure; deterministic validators decide what enters the case record.
 
 ## Key Concepts
 
-1. **Information Extraction:** Using few-shot prompting to extract IP addresses, domains, and hashes from raw text.
-2. **Local vs API Models:** Running local models (like LLaMA via Ollama) to ensure operational security (OPSEC) when analyzing sensitive data.
-3. **Structured Outputs:** Forcing LLMs to output strictly valid JSON schemas.
+1. **Local-first analysis:** Prefer local models or offline regex extraction when content includes sensitive victim data.
+2. **Schema-constrained extraction:** Ask for strict JSON, then validate and repair with deterministic code.
+3. **Evidence preservation:** Keep source spans and confidence scores for every extracted indicator.
+4. **Prompt injection resistance:** Treat untrusted reports and logs as data, not instructions.
+5. **Hybrid extraction:** Combine regex, parsers, and LLMs rather than relying on model output alone.
+6. **STIX/TAXII readiness:** Normalize outputs so they can later become STIX 2.1 bundles or TAXII-shared intelligence.
 
-## Target Audience
-Researchers looking to scale their analysis pipelines using AI agents.
+## Analyst Workflow
 
-## Boilerplate Setup
-The capstone project, `intel_extractor.py`, uses a local LLM to parse a mock unstructured report into the AIH-C IOC Schema. By default it uses local Ollama, but it can use the Claude or Gemini CLI if installed.
+### 1. Pre-Parse Deterministically
+
+Before involving a model:
+
+- Extract IPs, domains, URLs, hashes, emails, CVEs, and wallet addresses with regex.
+- Deduplicate and normalize obvious variants.
+- Preserve the original source line or span.
+
+This reduces model cost and makes the output auditable.
+
+### 2. Ask the Model for Structure, Not Truth
+
+Useful LLM tasks:
+
+- Group related indicators into infrastructure clusters.
+- Summarize likely roles such as `c2`, `stager`, `redirector`, or `panel`.
+- Extract prose evidence supporting a hypothesis.
+- Draft analyst notes from structured facts.
+
+Unsafe LLM tasks:
+
+- Making attribution claims without evidence.
+- Inventing enrichment data.
+- Deciding legal handling of leaked credentials.
+
+### 3. Validate Everything
+
+Validation checks should include:
+
+- JSON parseability.
+- Schema conformance.
+- Indicator type validation.
+- Domain/IP/hash normalization.
+- Confidence bounds.
+- Source span presence.
+
+### 4. Keep Provenance
+
+Every indicator should carry:
+
+- Source document name.
+- Extracted line or span.
+- Extraction method: regex, LLM, parser, or analyst.
+- Confidence and rationale.
+
+## Module Project: Intel Extractor
+
+The capstone project, `intel_extractor.py`, performs deterministic IOC extraction first, optionally asks a local/provider model for role labels, validates output, and emits the AIH-C schema.
 
 ```bash
 cd projects/0x0D_intel_extractor
-python intel_extractor.py -f report.txt --provider ollama
+python intel_extractor.py --text "C2 was observed at 185.220.101.77 and payload hash a1b2c3d4..."
+python intel_extractor.py -f report.txt --provider mock
+python intel_extractor.py -f report.txt --provider ollama --format table
 ```
 
+## OPSEC & Ethics
 
-
-```python
-#!/usr/bin/env python3
-"""
-intel_extractor.py — LLM-Assisted Threat Intel Extraction
-Module 0x0D Capstone Project | AIH-C Curriculum
-
-Extracts IOCs from unstructured text using local Ollama or other CLI tools.
-"""
-
-import argparse
-import json
-import subprocess
-import sys
-from datetime import datetime, timezone
-
-def query_ollama(prompt: str, model: str = "llama2") -> str:
-    """Query a local Ollama instance."""
-    try:
-        import httpx
-        response = httpx.post(
-            "http://localhost:11434/api/generate",
-            json={"model": model, "prompt": prompt, "stream": False, "format": "json"}
-        )
-        return response.json().get("response", "{}")
-    except ImportError:
-        # Fallback to subprocess if httpx isn't installed
-        cmd = ["ollama", "run", model, prompt]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        return result.stdout
-
-def query_cli(cmd_list: list, prompt: str) -> str:
-    """Generic CLI querying for Claude, Gemini, or Codex."""
-    try:
-        result = subprocess.run(cmd_list + [prompt], capture_output=True, text=True)
-        return result.stdout
-    except FileNotFoundError:
-        print(f"[!] CLI tool {cmd_list[0]} not found. Is it installed?", file=sys.stderr)
-        return "{}"
-
-def extract_iocs(text: str, provider: str) -> dict:
-    """Use an LLM provider to extract IOCs as JSON."""
-    prompt = f"""
-    Extract all IPs, domains, and hashes from the following threat intelligence report.
-    Output strictly as JSON following this schema:
-    {{"indicators": [{{"type": "ip|domain|hash", "value": "..."}}]}}
-    
-    Report:
-    {text}
-    """
-    
-    raw_json_str = "{}"
-    if provider == "ollama":
-        raw_json_str = query_ollama(prompt)
-    elif provider == "claude":
-        raw_json_str = query_cli(["claude", "-p"], prompt)
-    elif provider == "gemini":
-        raw_json_str = query_cli(["gemini", "ask"], prompt)
-    elif provider == "codex":
-        raw_json_str = query_cli(["codex", "query"], prompt)
-    else:
-        print("[!] Unknown provider. Using mock data.", file=sys.stderr)
-        raw_json_str = '{"indicators": [{"type": "ip", "value": "1.2.3.4"}]}'
-
-    # Attempt to parse
-    try:
-        extracted = json.loads(raw_json_str)
-    except json.JSONDecodeError:
-        # Mock fallback if parsing fails
-        extracted = {"indicators": [{"type": "domain", "value": "mock-extraction.com"}]}
-        
-    return extracted
-
-def main():
-    parser = argparse.ArgumentParser(description="LLM Intel Extractor")
-    parser.add_argument("-t", "--text", default="Adversary C2 was observed at 185.220.101.77 and payload hash is a1b2c3d4.", help="Raw unstructured text")
-    parser.add_argument("-p", "--provider", choices=["ollama", "claude", "gemini", "codex", "mock"], default="ollama", help="LLM Provider CLI to use")
-    args = parser.parse_args()
-
-    extracted_data = extract_iocs(args.text, args.provider)
-
-    # Output using IOC schema format
-    ioc_output = {
-        "metadata": {
-            "source_module": "0x0D_intel_extractor",
-            "provider": args.provider,
-            "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        },
-        "indicators": extracted_data.get("indicators", [])
-    }
-    
-    print(json.dumps(ioc_output, indent=2))
-
-if __name__ == "__main__":
-    main()
-```
+Never paste sensitive incident data, leaked credentials, customer names, or private reports into a hosted model unless policy and contracts explicitly allow it. Treat model output as untrusted until validated.

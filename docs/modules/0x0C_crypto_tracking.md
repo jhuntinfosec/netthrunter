@@ -1,78 +1,71 @@
 # Module 0x0C: Follow the Money (Crypto Tracking)
 
-Adversary infrastructure is often funded by cryptocurrency (Bitcoin, Monero). This module focuses on using blockchain heuristics to cluster wallets, identify mixing services, and trace ransomware affiliate payments back to infrastructure purchases.
+## Overview
+
+Financial infrastructure is part of adversary infrastructure. Ransomware notes, stealer panels, phishing kits, bulletproof hosting invoices, and marketplace profiles often contain cryptocurrency addresses. This module teaches careful, evidence-based blockchain analysis for clustering wallets, identifying service touchpoints, and enriching technical infrastructure leads.
+
+The curriculum remains defensive: students learn graph and heuristic techniques without attempting deanonymization beyond lawful open-source analysis.
 
 ## Key Concepts
 
-1. **Transaction Graphs:** Modeling the blockchain as a graph of inputs and outputs.
-2. **Address Clustering:** Heuristics like common-input ownership to group addresses into a single entity.
-3. **Mixing & Tumbling:** Identifying patterns typical of CoinJoin or other mixing services.
-4. **Cash-Out Nodes:** Tracking funds to known exchanges.
+1. **Transaction graphs:** Model wallets, transactions, services, and cash-out points as a directed graph.
+2. **Common-input clustering:** Multiple inputs in one transaction may indicate common control, with important exceptions.
+3. **Change address heuristics:** Infer likely change outputs by amount, address reuse, and script type.
+4. **Mixer and CoinJoin detection:** Recognize many-input/many-output patterns and uniform output amounts.
+5. **Service tagging:** Mark known exchange, mixer, marketplace, donation, and ransomware collection addresses from trusted datasets.
+6. **Infrastructure linkage:** Connect wallets to domains, leak records, ransom notes, hosting invoices, and actor profiles.
 
-## Target Audience
-Researchers needing to pivot from technical IOCs (e.g., a Bitcoin address found in a stealer log or ransomware note) to broader financial infrastructure.
+## Analysis Workflow
 
-## Boilerplate Setup
-The capstone project, `crypto_tracer.py`, builds a mock transaction graph and identifies clusters.
+### 1. Seed Collection
+
+Wallet seeds can come from:
+
+- Ransom notes or extortion portals.
+- Stealer logs and bot configs.
+- Public reporting and sanctions lists.
+- Marketplace profiles.
+- Malware configuration extraction.
+
+Always preserve source context and confidence. A wallet in a paste is weaker evidence than a wallet embedded in a ransom note delivered to a confirmed victim.
+
+### 2. Graph Expansion
+
+Expand cautiously:
+
+- One hop from a seed wallet is usually safe for training.
+- Multi-hop expansion should require service tagging and analyst review.
+- Known high-volume services should stop expansion, not create attribution.
+
+### 3. Heuristic Scoring
+
+Useful signals:
+
+- Shared transaction inputs.
+- Repeated collection-wallet behavior.
+- Fan-in from many victims.
+- Fan-out to exchanges.
+- Mixer-like equal outputs.
+- Temporal proximity to campaign infrastructure creation.
+
+### 4. Reporting
+
+Financial findings should use careful language:
+
+- “Wallet observed in actor-controlled note” is evidence.
+- “Likely related wallet by common-input heuristic” is an inference.
+- “Exchange deposit address” usually means a service touchpoint, not actor identity.
+
+## Module Project: Crypto Tracer
+
+The capstone project, `crypto_tracer.py`, builds a mock transaction graph, applies common-input and mixer heuristics, tags known services, and emits AIH-C indicators that can be fed into graph and profiling modules.
 
 ```bash
 cd projects/0x0C_crypto_tracer
-python crypto_tracer.py -w bc1q_mock_wallet
+python crypto_tracer.py -w bc1q_actor
+python crypto_tracer.py -w bc1q_actor --hops 2 --format table
 ```
 
+## OPSEC & Ethics
 
-
-```python
-#!/usr/bin/env python3
-"""
-crypto_tracer.py — Crypto Tracking and Clustering
-Module 0x0C Capstone Project | AIH-C Curriculum
-
-Traces transactions and clusters wallets based on mock blockchain data.
-"""
-
-import argparse
-import json
-from datetime import datetime, timezone
-
-# Mock Blockchain Graph
-MOCK_TXS = [
-    {"txid": "tx1", "inputs": ["bc1q_actor"], "outputs": [{"address": "bc1q_mixer", "amount": 5.0}]},
-    {"txid": "tx2", "inputs": ["bc1q_mixer"], "outputs": [{"address": "bc1q_exchange", "amount": 4.9}]},
-]
-
-def trace_wallet(wallet: str) -> list:
-    """Mock trace to find related transactions and addresses."""
-    related = []
-    for tx in MOCK_TXS:
-        if wallet in tx["inputs"] or any(out["address"] == wallet for out in tx["outputs"]):
-            related.append(tx)
-    return related
-
-def main():
-    parser = argparse.ArgumentParser(description="Crypto Tracer")
-    parser.add_argument("-w", "--wallet", required=True, help="Target BTC Wallet Address")
-    args = parser.parse_args()
-
-    txs = trace_wallet(args.wallet)
-
-    # Output using IOC schema format
-    ioc_output = {
-        "metadata": {
-            "source_module": "0x0C_crypto_tracer",
-            "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        },
-        "indicators": [
-            {
-                "type": "hash",
-                "value": args.wallet,
-                "context": {"transactions": txs}
-            }
-        ]
-    }
-    
-    print(json.dumps(ioc_output, indent=2))
-
-if __name__ == "__main__":
-    main()
-```
+Do not interact with adversary wallets. Do not send dust transactions. Do not publish victim payment details without authorization. Treat wallet clusters as analytic leads, not definitive identity claims.

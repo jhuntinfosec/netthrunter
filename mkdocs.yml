@@ -56,4 +56,8 @@ nav:
     - "0x0D: LLM & AI-Assisted Threat Hunting": modules/0x0D_llm_hunting.md
     - "0x0E: Active Defense & Deception": modules/0x0E_active_defense.md
     - "0x0F: Threat Profiling & TTP Matrix Mapping": modules/0x0F_threat_profiling.md
+    - "0x10: Detection Engineering & Telemetry Normalization": modules/0x10_detection_engineering.md
+    - "0x11: Identity, SaaS & OAuth Infrastructure Hunting": modules/0x11_identity_saas_hunting.md
+    - "0x12: Container, Kubernetes & Registry Hunting": modules/0x12_container_kubernetes_hunting.md
+    - "0x13: Exploited Vulnerability-to-Infrastructure Correlation": modules/0x13_kev_infrastructure_correlation.md
   - Projects: projects.md

@@ -9,7 +9,7 @@ To provide an engineering-centric methodology for proactively identifying, track
 
 ---
 
-## 🏛️ The Curriculum (15 Modules)
+## 🏛️ The Curriculum (19 Modules)
 
 | Module | Focus Area | Key Concepts |
 | :--- | :--- | :--- |
@@ -27,7 +27,11 @@ To provide an engineering-centric methodology for proactively identifying, track
 | **0x0C** | **[Follow the Money (Crypto Tracking)](modules/0x0C_crypto_tracking.md)** | Bitcoin blockchain heuristics, tracing mixing services, and ransomware tracking. |
 | **0x0D** | **[LLM & AI-Assisted Threat Hunting](modules/0x0D_llm_hunting.md)** | Extracting unstructured intel, generating STIX/TAXII, and using local Ollama instances. |
 | **0x0E** | **[Active Defense & Deception](modules/0x0E_active_defense.md)** | Deploying high-interaction honeypots, logging scanner IPs, and JA3 fingerprint collection. |
-| **0x0F** | **[Threat Profiling & TTP Matrix Mapping](modules/0x0F_threat_profiling.md)** | Creating behavioral profiles, MITRE PRE-ATT&CK mapping, and compiling actor dossiers. |
+| **0x0F** | **[Threat Profiling & TTP Matrix Mapping](modules/0x0F_threat_profiling.md)** | Creating behavioral profiles, ATT&CK Reconnaissance/Resource Development mapping, and compiling actor dossiers. |
+| **0x10** | **[Detection Engineering & Telemetry Normalization](modules/0x10_detection_engineering.md)** | Sigma rule generation, OCSF-style event examples, and SOC-ready hunt packages. |
+| **0x11** | **[Identity, SaaS & OAuth Infrastructure Hunting](modules/0x11_identity_saas_hunting.md)** | OAuth consent abuse, SaaS audit pivots, IdP artifacts, and suspicious app infrastructure. |
+| **0x12** | **[Container, Kubernetes & Registry Hunting](modules/0x12_container_kubernetes_hunting.md)** | Exposed Kubernetes services, registry metadata, privileged workloads, and container ATT&CK mapping. |
+| **0x13** | **[Exploited Vulnerability-to-Infrastructure Correlation](modules/0x13_kev_infrastructure_correlation.md)** | CISA KEV prioritization, product fingerprint matching, and exploit-wave infrastructure scoring. |
 
 ---
 
@@ -38,6 +42,7 @@ This project emphasizes **Python-driven automation**. The following libraries fo
 * **Fingerprinting:** `jarm-py`, `pytls`, `hashlib`.
 * **Data Science:** `pandas`, `networkx` (for graph logic), `scikit-learn` (for clustering).
 * **Automation:** `asyncio` for high-concurrency CT log consumption and API orchestration.
+* **Detection Engineering:** Sigma-style rules, OCSF-style normalized events, and ATT&CK mapping.
 
 ---
 

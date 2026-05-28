@@ -8,13 +8,13 @@
 **Created:** 2026-04-02
 **Last updated:** 2026-04-02
 
-Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C) — a 15-module educational curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Targets senior threat researchers and security engineers. Each module pairs a teaching document with a runnable Python capstone project. Served via MkDocs with Material theme.
+Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C) — a 19-module educational curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Targets senior threat researchers and security engineers. Each module pairs a teaching document with a runnable Python capstone project. Served via MkDocs with Material theme.
 
 ## Architecture
 
 ```
-docs/modules/          — 10 teaching modules (theory, techniques, tool references, inline project code)
-projects/              — 10 capstone Python project directories (1 script each, 70-99 LOC starters)
+docs/modules/          — 19 teaching modules (theory, techniques, tool references, capstone guidance)
+projects/              — 19 capstone Python project directories (single-file, mock-first scripts)
 docs/index.md          — Landing page with curriculum overview and toolbelt reference
 docs/projects.md       — Capstone projects overview and reference library integration
 books/                 — Offline reference library (gitignored PDFs)
@@ -22,6 +22,15 @@ mkdocs.yml             — MkDocs configuration, nav structure, Material theme
 .venv/                 — Python virtual environment (gitignored)
 site/                  — MkDocs build output (gitignored)
 ```
+
+## Current Expansion
+
+The curriculum now includes strengthened modules `0x0B`-`0x0F` and four new operationalization modules:
+
+- `0x10` Detection Engineering & Telemetry Normalization
+- `0x11` Identity, SaaS & OAuth Infrastructure Hunting
+- `0x12` Container, Kubernetes & Registry Hunting
+- `0x13` Exploited Vulnerability-to-Infrastructure Correlation
 
 ## Original Intent
 

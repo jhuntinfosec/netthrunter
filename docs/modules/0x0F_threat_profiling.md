@@ -1,91 +1,76 @@
 # Module 0x0F: Threat Profiling & TTP Matrix Mapping
 
-The ultimate goal of infrastructure hunting is attribution and behavioral profiling. By examining how an adversary builds their infrastructure, we can map their operational security practices and link seemingly disparate clusters.
+## Overview
+
+Infrastructure hunting becomes finished intelligence when raw indicators are turned into a defensible behavioral profile. This module teaches how to aggregate evidence from previous modules, map infrastructure behavior to MITRE ATT&CK Enterprise Reconnaissance and Resource Development techniques, score confidence, and produce an actor dossier.
+
+MITRE retired PRE-ATT&CK in 2020. Modern mapping should use Enterprise ATT&CK tactics such as Reconnaissance and Resource Development for pre-compromise infrastructure behavior.
 
 ## Key Concepts
 
-1. **Infrastructure as a TTP:** Recognizing that using Namecheap + Cloudflare + Let's Encrypt is a behavioral pattern (TTP).
-2. **MITRE PRE-ATT&CK Mapping:** Associating technical indicators with framework stages (e.g., T1583.001 Acquire Infrastructure: Domains).
-3. **Actor Profiling:** Aggregating data across all previous modules to generate a unified actor dossier.
+1. **Infrastructure as behavior:** Provider choice, TLS defaults, registrar patterns, CDN usage, and staging cadence are repeatable operational habits.
+2. **Technique mapping:** Map observations to ATT&CK techniques such as `T1583.001 Acquire Infrastructure: Domains`, `T1583.006 Web Services`, `T1588.004 Digital Certificates`, and `T1596.003 Digital Certificates`.
+3. **Evidence weighting:** Separate direct observations, enrichments, weak pivots, and analyst inferences.
+4. **Actor dossier structure:** Summarize infrastructure, tooling, timelines, confidence, gaps, and recommended hunts.
+5. **Competing hypotheses:** Document alternate explanations and false-positive risks.
+6. **Case handoff:** Produce JSON, Markdown, and graph-friendly outputs that downstream modules can turn into detections and reports.
 
-## Target Audience
-Senior researchers or intel analysts who need to produce finished intelligence reports derived from raw infrastructure telemetry.
+## Profiling Workflow
 
-## Boilerplate Setup
-The capstone project, `ttp_profiler.py`, ingests a JSON file of aggregated IOCs and outputs a mapped profile using MITRE ATT&CK tagging.
+### 1. Normalize Inputs
+
+Accept AIH-C IOC schema from all previous modules. Normalize:
+
+- Indicator type and value.
+- Source module.
+- Collection timestamp.
+- Evidence type.
+- Confidence.
+- Related indicators.
+
+### 2. Extract Behaviors
+
+Examples:
+
+- Multiple domains registered together -> campaign staging.
+- Shared JARM and SSH key -> common deployment automation.
+- CloudFront plus API Gateway redirector -> web-service fronting pattern.
+- Reused wallet in extortion notes -> financial infrastructure link.
+
+### 3. Map Techniques
+
+Use ATT&CK as a vocabulary, not a substitute for evidence. A domain indicator may map to `Acquire Infrastructure: Domains`, but the dossier should still explain why the domain appears actor-controlled.
+
+### 4. Score Confidence
+
+Suggested scale:
+
+- **High:** Multiple independent indicators, direct infrastructure behavior, and temporal consistency.
+- **Medium:** Strong pivots but missing one corroborating source.
+- **Low:** Single-source or weak similarity only.
+
+### 5. Produce the Dossier
+
+A useful dossier includes:
+
+- Executive summary.
+- Infrastructure table.
+- Technique mapping table.
+- Timeline.
+- Confidence and gaps.
+- Next hunts.
+
+## Module Project: TTP Profiler
+
+The capstone project, `ttp_profiler.py`, ingests one or more AIH-C JSON files, maps indicators and context to ATT&CK techniques, computes confidence, and emits a Markdown or JSON actor profile.
 
 ```bash
 cd projects/0x0F_ttp_profiler
-python ttp_profiler.py -i ../ioc_schema.json
+python ttp_profiler.py
+python ../0x0B_cloud_mapper/cloud_mapper.py | python ttp_profiler.py --format markdown
+python ttp_profiler.py -i findings/*.json --format markdown
 ```
 
+## OPSEC & Ethics
 
-
-```python
-#!/usr/bin/env python3
-"""
-ttp_profiler.py — Threat Profiling and MITRE Mapping
-Module 0x0F Capstone Project | AIH-C Curriculum
-
-Ingests IOC schemas and outputs a behavioral TTP profile.
-"""
-
-import argparse
-import json
-from datetime import datetime
-
-def map_ttps(indicators: list) -> dict:
-    """Mock mapping of indicators to MITRE TTPs."""
-    profile = {
-        "actor_id": "UNKNOWN_ACTOR",
-        "tactics": [],
-        "techniques": [],
-        "summary": "Generated behavioral profile."
-    }
-    
-    types = [i.get("type") for i in indicators]
-    
-    if "domain" in types:
-        profile["techniques"].append({"id": "T1583.001", "name": "Acquire Infrastructure: Domains"})
-    
-    if "jarm" in types:
-        profile["techniques"].append({"id": "T1588.004", "name": "Obtain Capabilities: Digital Certificates"})
-        
-    if "hash" in types:
-        profile["techniques"].append({"id": "T1584.004", "name": "Compromise Infrastructure: Server"})
-
-    # Deduplicate
-    profile["techniques"] = [dict(t) for t in {tuple(d.items()) for d in profile["techniques"]}]
-    return profile
-
-def main():
-    parser = argparse.ArgumentParser(description="Threat Profiler (TTP Mapper)")
-    parser.add_argument("-i", "--input", help="Path to input IOC schema JSON file")
-    args = parser.parse_args()
-
-    indicators = []
-    if args.input:
-        try:
-            with open(args.input) as f:
-                data = json.load(f)
-                indicators = data.get("indicators", [])
-        except Exception as e:
-            print(f"[!] Error reading {args.input}: {e}")
-            return
-    else:
-        # Mock data
-        indicators = [
-            {"type": "domain", "value": "mock.com"},
-            {"type": "jarm", "value": "mock_hash"}
-        ]
-
-    profile = map_ttps(indicators)
-    
-    print("="*50)
-    print(" ACTOR BEHAVIORAL PROFILE")
-    print("="*50)
-    print(json.dumps(profile, indent=2))
-
-if __name__ == "__main__":
-    main()
-```
+Avoid over-attribution. Infrastructure overlap can suggest common operators, shared tooling, shared hosting, or coincidence. State what the evidence supports and where uncertainty remains.

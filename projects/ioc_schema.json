@@ -19,7 +19,7 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["ip", "domain", "url", "jarm", "hash", "email", "asn"]
+            "enum": ["ip", "domain", "url", "jarm", "hash", "email", "asn", "wallet", "cve", "container_image", "oauth_app", "detection_rule"]
           },
           "value": { "type": "string" },
           "context": {

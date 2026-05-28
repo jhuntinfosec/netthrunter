@@ -1,91 +1,62 @@
 # Module 0x0E: Active Defense & Deception
 
-Instead of hunting for adversary infrastructure actively, threat hunters can deploy deception infrastructure (honeypots, canaries) to passively capture adversary scanners.
+## Overview
+
+Deception infrastructure lets defenders collect adversary and scanner telemetry passively. Well-designed decoys can reveal scanning infrastructure, tooling fingerprints, payload staging behavior, and targeting patterns without probing suspected adversary systems.
+
+This module focuses on low-risk, authorized deception: lightweight canaries, fake directory listings, honeypot telemetry, enrichment, and evidence handling.
 
 ## Key Concepts
 
-1. **High-Interaction vs Low-Interaction Honeypots:** Tradeoffs in operational security.
-2. **Scanner Fingerprinting:** Capturing the JA3/JARM of the automated scanners hitting your infrastructure to attribute the scanning campaigns.
-3. **Decoy Telemetry:** Logging and enriching inbound connections.
+1. **Low vs high interaction:** Low-interaction decoys are safer and easier to operate; high-interaction systems collect richer behavior but increase containment risk.
+2. **Scanner fingerprinting:** Capture source IP, user agent, requested path, header order, TLS client fingerprint when available, and timing behavior.
+3. **Canary design:** Expose plausible but harmless resources such as fake config names, fake panels, or synthetic bucket listings.
+4. **Telemetry enrichment:** Classify scanner IPs by ASN, cloud provider, proxy indicators, and known research networks.
+5. **Containment:** Decoys must not become launch points, credential stores, or real vulnerable services.
+6. **Legal handling:** Clearly separate internal canary telemetry from third-party victim data.
 
-## Target Audience
-Defenders wanting to transition from passive reconnaissance to active intelligence gathering by setting traps for automated adversary discovery tools.
+## Deception Patterns
 
-## Boilerplate Setup
-The capstone project, `decoy_listener.py`, sets up a mock HTTP server that simulates a vulnerable directory listing and logs the incoming IPs for enrichment.
+### Directory Listing Decoy
+
+Expose a harmless listing with filenames that attract commodity scanners:
+
+- `config.json`
+- `.env`
+- `backup.zip`
+- `payload.bin`
+- `panel/`
+
+The lesson is in who asks for what, in what order, and from where.
+
+### Cloud Storage Canary
+
+Use a controlled bucket name and public object metadata to identify enumeration tooling. Never place secrets or real payloads in the bucket.
+
+### Login Panel Canary
+
+Expose a fake login surface that records requests and never authenticates. Avoid collecting passwords beyond synthetic honey credentials that your own team created.
+
+### Header and Timing Capture
+
+Useful features:
+
+- User-Agent and Accept headers.
+- Path sequence.
+- Inter-request timing.
+- ASN and cloud provider.
+- Repeated probes across decoys.
+
+## Module Project: Decoy Listener
+
+The capstone project, `decoy_listener.py`, can run in demo mode or serve a local decoy HTTP listener. It classifies path probes, enriches scanner IPs with mock provider/ASN data, computes a scanner profile, and exports AIH-C indicators.
 
 ```bash
 cd projects/0x0E_decoy_listener
+python decoy_listener.py --demo
 python decoy_listener.py --port 8080
 ```
 
+## OPSEC & Ethics
 
-
-```python
-#!/usr/bin/env python3
-"""
-decoy_listener.py — Active Defense Honeypot
-Module 0x0E Capstone Project | AIH-C Curriculum
-
-A lightweight HTTP listener that logs incoming scanners into the IOC schema.
-"""
-
-import argparse
-import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from datetime import datetime, timezone
-
-IOC_LOG = []
-
-class DecoyHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        client_ip = self.client_address[0]
-        
-        # Log the scanning IP
-        IOC_LOG.append({
-            "type": "ip",
-            "value": client_ip,
-            "context": {"path": self.path, "user_agent": self.headers.get("User-Agent")}
-        })
-        
-        # Respond with a fake directory listing
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.wfile.write(b"<html><body><h1>Index of /</h1><ul><li><a href='config.json'>config.json</a></li></ul></body></html>")
-
-def main():
-    parser = argparse.ArgumentParser(description="Decoy Listener Honeypot")
-    parser.add_argument("-p", "--port", type=int, default=8080, help="Port to listen on")
-    parser.add_argument("--demo", action="store_true", help="Run a mock simulation instead of binding port")
-    args = parser.parse_args()
-
-    if args.demo:
-        # Mock simulation
-        IOC_LOG.extend([
-            {"type": "ip", "value": "198.51.100.2", "context": {"path": "/", "user_agent": "masscan/1.3.2"}},
-            {"type": "ip", "value": "203.0.113.15", "context": {"path": "/config.json", "user_agent": "python-requests/2.28.1"}}
-        ])
-    else:
-        print(f"[*] Starting decoy listener on port {args.port}. Press Ctrl+C to stop and dump IOCs.")
-        server = HTTPServer(('', args.port), DecoyHandler)
-        try:
-            server.serve_forever()
-        except KeyboardInterrupt:
-            pass
-        server.server_close()
-
-    # Output using IOC schema format
-    ioc_output = {
-        "metadata": {
-            "source_module": "0x0E_decoy_listener",
-            "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        },
-        "indicators": IOC_LOG
-    }
-    
-    print("\n" + json.dumps(ioc_output, indent=2))
-
-if __name__ == "__main__":
-    main()
-```
+Do not deploy vulnerable services as bait unless your organization explicitly authorizes high-interaction honeypots and containment is in place. Keep decoy data synthetic. Do not entrap users or collect unrelated personal data.

@@ -2,7 +2,7 @@
 
 **Advanced Infrastructure & Adversary Hunting Curriculum (AIH-C)**
 
-A 15-module technical curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Built for senior threat researchers and security engineers who want to move beyond static IOCs and focus on behavioral fingerprints and structural overlaps of adversary infrastructure.
+A 19-module technical curriculum and engineering framework for proactively identifying, tracking, and mapping threat actor infrastructure. Built for senior threat researchers and security engineers who want to move beyond static IOCs and focus on behavioral fingerprints and structural overlaps of adversary infrastructure.
 
 ## Quickstart
 
@@ -49,11 +49,15 @@ Each module pairs a teaching document (theory, techniques, tool references, case
 | **0x08** | [Proxy & Botnet Layers](docs/modules/0x08_proxy_botnet_layers.md) | IP intelligence classifier with risk scoring | 888 |
 | **0x09** | [Hunter OPSEC](docs/modules/0x09_hunter_opsec.md) | Distributed Lambda scanner with SAM templates | 610 |
 | **0x0A** | [Data Science for Hunting](docs/modules/0x0A_data_science_hunting.md) | Entropy + K-Means + Isolation Forest classifier | 618 |
-| **0x0B** | [Cloud Infrastructure Hunting](docs/modules/0x0B_cloud_infrastructure.md) | Map cloud IPs and identify open S3 buckets | 65 |
-| **0x0C** | [Follow the Money (Crypto Tracking)](docs/modules/0x0C_crypto_tracking.md) | Traces transactions and clusters BTC wallets | 46 |
-| **0x0D** | [LLM & AI-Assisted Threat Hunting](docs/modules/0x0D_llm_hunting.md) | Extract IOCs using local Ollama/Claude/Gemini | 62 |
-| **0x0E** | [Active Defense & Deception](docs/modules/0x0E_active_defense.md) | Active honeypot listener logging scanners | 45 |
-| **0x0F** | [Threat Profiling & TTP Matrix Mapping](docs/modules/0x0F_threat_profiling.md) | Maps IOCs to MITRE ATT&CK behavior profiles | 45 |
+| **0x0B** | [Cloud Infrastructure Hunting](docs/modules/0x0B_cloud_infrastructure.md) | Maps cloud providers, services, storage exposure, and serverless abuse | 256 |
+| **0x0C** | [Follow the Money (Crypto Tracking)](docs/modules/0x0C_crypto_tracking.md) | Traces transaction graphs, wallet clusters, and service tags | 218 |
+| **0x0D** | [LLM & AI-Assisted Threat Hunting](docs/modules/0x0D_llm_hunting.md) | Extracts and validates IOCs with deterministic + optional LLM roles | 185 |
+| **0x0E** | [Active Defense & Deception](docs/modules/0x0E_active_defense.md) | Profiles decoy scanner telemetry with mock enrichment | 183 |
+| **0x0F** | [Threat Profiling & TTP Matrix Mapping](docs/modules/0x0F_threat_profiling.md) | Maps IOCs to ATT&CK techniques and actor dossiers | 179 |
+| **0x10** | [Detection Engineering & Telemetry Normalization](docs/modules/0x10_detection_engineering.md) | Builds Sigma-like rules and OCSF-style examples | 125 |
+| **0x11** | [Identity, SaaS & OAuth Infrastructure Hunting](docs/modules/0x11_identity_saas_hunting.md) | Scores SaaS/OAuth audit events and pivots domains | 129 |
+| **0x12** | [Container, Kubernetes & Registry Hunting](docs/modules/0x12_container_kubernetes_hunting.md) | Scores Kubernetes and registry exposure metadata | 120 |
+| **0x13** | [Exploited Vulnerability-to-Infrastructure Correlation](docs/modules/0x13_kev_infrastructure_correlation.md) | Correlates KEV entries to exposed-service fingerprints | 111 |
 
 All projects run in **mock/demo mode** with zero configuration — no API keys required. Real API integrations (Shodan, crt.sh, ip-api.com, Telegram) activate via environment variables.
 
@@ -61,7 +65,7 @@ All projects run in **mock/demo mode** with zero configuration — no API keys r
 
 ```
 docs/
-  modules/          15 teaching modules (Markdown, served via MkDocs)
+  modules/          19 teaching modules (Markdown, served via MkDocs)
   index.md          Landing page
   projects.md       Capstone projects overview
 projects/
@@ -80,6 +84,10 @@ projects/
   0x0D_intel_extractor/     intel_extractor.py
   0x0E_decoy_listener/      decoy_listener.py
   0x0F_ttp_profiler/        ttp_profiler.py
+  0x10_detection_pack/      detection_pack_builder.py
+  0x11_saas_identity_hunter/saas_audit_hunter.py
+  0x12_k8s_mapper/          k8s_exposure_mapper.py
+  0x13_kev_correlator/      kev_infra_correlator.py
 books/              Offline reference library (PDFs, gitignored)
 mkdocs.yml          MkDocs Material configuration
 ```
@@ -104,6 +112,8 @@ mkdocs.yml          MkDocs Material configuration
 
 **Data Science** — Shannon entropy for DGA detection, K-Means with elbow method, Isolation Forest anomaly detection, feature engineering pipeline
 
+**Detection & Response Enablement** — Sigma-like rules, OCSF-style normalization, ATT&CK mapping, SaaS/OAuth audit pivots, Kubernetes exposure scoring, and KEV-to-infrastructure correlation
+
 ## Tools Referenced
 
 The curriculum integrates these tools contextually within each module:
@@ -117,6 +127,8 @@ The curriculum integrates these tools contextually within each module:
 | IP Intelligence | MaxMind GeoLite2, IPinfo.io, BGPView, Spamhaus |
 | Malware Analysis | MalwareBazaar, URLhaus, Any.Run, Triage |
 | OPSEC | AWS Lambda/SAM, curl_cffi, Tor, proxychains |
+| Detection Engineering | Sigma, OCSF, ATT&CK Navigator |
+| Cloud/SaaS/Containers | CISA SCuBA, cloud audit logs, Kubernetes metadata, CISA KEV |
 
 ## Dependencies
 
